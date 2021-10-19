@@ -5,22 +5,17 @@ const User = require("../../model/userModel");
 class authController {
   static async register(req, res) {
     try {
-      const { name, email, image } = req.body;
-      const cekName = await User.findOne({ name });
+      const { username, email } = req.body;
+      const cekUsername = await User.findOne({ username });
       const cekEmail = await User.findOne({ email });
 
-      if (cekEmail || cekName) {
+      if (cekEmail || cekUsername) {
         res.status(409).json({ message: "conflict name/email", status: 409 });
       } else {
         const password = await Bcrypt.enskrip(req.body.password);
-        var user = "";
-        if (image) {
-          user = new User({ name, email, password, image });
-        } else {
-          user = new User({ name, email, password });
-        }
-        const save = await user.save();
-        res.send(save);
+        const user = new User({ username, email, password });
+        await user.save();
+        res.status(200).json({ message: "Berhasil register", status: 200 });
       }
     } catch (err) {
       console.log(err);
@@ -29,8 +24,8 @@ class authController {
   }
   static async login(req, res) {
     try {
-      const { name, password } = req.body;
-      const db = await User.findOne({ name });
+      const { username, password } = req.body;
+      const db = await User.findOne({ username });
       if (db) {
         const hash = db.password;
         const hasil = await Bcrypt.deskrip({ password, hash });

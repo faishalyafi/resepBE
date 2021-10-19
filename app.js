@@ -3,11 +3,14 @@ require("./src/utils/dbConnect");
 const express = require("express");
 const app = express();
 const morgan = require("morgan");
+const cors = require("cors");
 const logMiddleware = require("./src/middleware/loginMiddleware");
 const routerAuth = require("./src/routes/auth");
+const routerProfil = require("./src/routes/profil");
 const port = process.env.PORT || 3000;
 
 app.use(morgan("dev"));
+app.use(cors());
 
 app.use(express.json()); // for parsing application/json
 app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
@@ -15,9 +18,11 @@ app.use(express.urlencoded({ extended: true })); // for parsing application/x-ww
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
-app.use("/auth", routerAuth);
 
-app.get("/home", logMiddleware.auth, (req, res) => {
+app.use("/auth", routerAuth);
+app.use("/user", logMiddleware.auth, routerProfil);
+
+app.get("/home", logMiddleware.auth, logMiddleware.author, (req, res) => {
   res.send("halaman home");
 });
 
