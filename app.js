@@ -8,6 +8,7 @@ const logMiddleware = require("./src/middleware/loginMiddleware");
 const routerAuth = require("./src/routes/auth");
 const routerProfil = require("./src/routes/profil");
 const port = process.env.PORT || 3000;
+const path = require("path");
 
 app.use(morgan("dev"));
 app.use(cors());
@@ -21,7 +22,7 @@ app.get("/", (req, res) => {
 
 app.use("/auth", routerAuth);
 app.use("/user", logMiddleware.auth, routerProfil);
-
+app.use("/public", express.static(path.join(__dirname, "public")));
 app.get("/home", logMiddleware.auth, logMiddleware.author, (req, res) => {
   res.send("halaman home");
 });

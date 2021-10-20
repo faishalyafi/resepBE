@@ -6,15 +6,19 @@ class profilControler {
     try {
       const { nama_lengkap, tempat, tanggal, alamat } = req.body;
       const username = req.user.username;
-      const image = req.file;
-      console.log(image);
-      console.log(username);
       const db = await User.findOne({ username });
       if (db) {
-        await User.updateOne({
-          $set: { nama_lengkap, tempat, tanggal, alamat, image },
-        });
-        res.status(200).json({ message: sukses, status: 200 });
+        if (req.file) {
+          const image = req.file.path;
+          await User.updateOne({ username }, { $set: { image } });
+        }
+        await User.updateOne(
+          { username },
+          {
+            $set: { nama_lengkap, tempat, tanggal, alamat },
+          }
+        );
+        res.status(200).json({ message: "sukses terupdate", status: 200 });
       } else {
         res.status(404).json({ message: "Not Found", status: 404 });
       }

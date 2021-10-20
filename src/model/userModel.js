@@ -19,7 +19,7 @@ const userSchema = new Schema(
     },
     image: {
       type: String,
-      default: "user.jpg",
+      default: "public/images/user.png",
     },
     nama_lengkap: {
       type: String,
