@@ -30,12 +30,16 @@ const userSchema = new Schema(
       default: null,
     },
     tanggal: {
-      type: Date,
+      type: String,
       default: null,
     },
     alamat: {
       type: String,
       default: null,
+    },
+    role: {
+      type: Number,
+      default: 2,
     },
   },
   { timestamps: true }

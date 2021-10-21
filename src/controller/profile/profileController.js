@@ -1,8 +1,8 @@
+const upload = require("../../helper/upload");
 const User = require("../../model/userModel");
-const path = require("path");
 
 class profilControler {
-  static async updProfile(req, res) {
+  static async updProfile(req, res, next) {
     try {
       const { nama_lengkap, tempat, tanggal, alamat } = req.body;
       const username = req.user.username;

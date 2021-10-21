@@ -1,14 +1,12 @@
 const express = require("express");
-const app = express();
-const profilControler = require("../controller/auth/profilController");
-const logMiddleware = require("../middleware/loginMiddleware");
-const router = express.Router();
+const profilControler = require("../controller/profile/profileController");
 const upload = require("../helper/upload");
+const logMiddleware = require("../middleware/loginMiddleare");
+const router = express.Router();
 
-app.use(logMiddleware.auth);
 router
   .route("/profile")
-  .get(profilControler.getProfile)
-  .put(upload, profilControler.updProfile);
+  .get(logMiddleware.auth, profilControler.getProfile)
+  .post(logMiddleware.auth, upload, profilControler.updProfile);
 
 module.exports = router;

@@ -13,8 +13,7 @@ class authController {
         res.status(409).json({ message: "conflict name/email", status: 409 });
       } else {
         const password = await Bcrypt.enskrip(req.body.password);
-        const user = new User({ username, email, password });
-        await user.save();
+        await User.create({ username, email, password });
         res.status(200).json({ message: "Berhasil register", status: 200 });
       }
     } catch (err) {
