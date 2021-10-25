@@ -6,19 +6,20 @@ class authController {
   static async register(req, res) {
     try {
       const { username, email } = req.body;
-      const cekUsername = await User.findOne({ username });
-      const cekEmail = await User.findOne({ email });
+      const cek = await User.find({ $or: [{ username }, { email }] });
 
-      if (cekEmail || cekUsername) {
+      if (cek.length) {
         res.status(409).json({ message: "conflict name/email", status: 409 });
       } else {
         const password = await Bcrypt.enskrip(req.body.password);
-        await User.create({ username, email, password });
-        res.status(200).json({ message: "Berhasil register", status: 200 });
+        const data = await User.create({ username, email, password });
+        res
+          .status(200)
+          .json({ message: "Berhasil register", status: 200, data });
       }
     } catch (err) {
       console.log(err);
-      res.status(500).json({ message: "error", status: 500 });
+      res.status(500).json({ message: " register error", status: 500 });
     }
   }
   static async login(req, res) {
@@ -28,6 +29,7 @@ class authController {
       if (db) {
         const hash = db.password;
         const hasil = await Bcrypt.deskrip({ password, hash });
+        req.body.role = db.role;
         if (hasil) {
           const token = await JWT.token(req.body);
           res.status(200).json({
