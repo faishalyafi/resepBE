@@ -4,6 +4,7 @@ const routerAuth = require("./auth");
 const routerProfile = require("./profil");
 const routerHome = require("./home");
 const routerContent = require("./content");
+const routerComment = require("./comment");
 
 router.use("/", routerHome);
 router.use("/auth", routerAuth);
