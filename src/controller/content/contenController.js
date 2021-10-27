@@ -5,8 +5,16 @@ class ContentController {
   static async add(req, res) {
     try {
       const username = req.user.username;
-      const { nama_resep, kategori, tag, deskripsi, url, bahan, cara_buat } =
-        req.body;
+      const {
+        nama_resep,
+        kategori,
+        tag,
+        deskripsi,
+        url,
+        bahan,
+        cara_buat,
+        image,
+      } = req.body;
       const user = await User.findOne({ username });
       const cek = await Content.findOne({ url });
       if (cek) {
@@ -20,6 +28,7 @@ class ContentController {
           url,
           bahan,
           cara_buat,
+          image,
           user: user._id,
         });
         res
@@ -117,6 +126,39 @@ class ContentController {
     } catch (err) {
       console.log(err);
       res.status(500).json({ message: "Error updConten", status: 500 });
+    }
+  }
+  static async getDelicious(req, res) {
+    try {
+      const data = await Content.find({ kategori: "Delicious" });
+      res
+        .status(200)
+        .json({ message: "Data by Delicious category", status: 200, data });
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ message: "Error getDelcious" });
+    }
+  }
+  static async getHealty(req, res) {
+    try {
+      const data = await Content.find({ kategori: "Healty" });
+      res
+        .status(200)
+        .json({ message: "Data by Healty category", status: 200, data });
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ message: "Error getHealty" });
+    }
+  }
+  static async getInexpensive(req, res) {
+    try {
+      const data = await Content.find({ kategori: "Inexpensive" });
+      res
+        .status(200)
+        .json({ message: "Data by Inexpensive category", status: 200, data });
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ message: "Error getInexpensive" });
     }
   }
 }
