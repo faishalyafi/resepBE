@@ -9,5 +9,6 @@ router.use("/", routerHome);
 router.use("/auth", routerAuth);
 router.use("/user", routerProfile);
 router.use("/content", routerContent);
+router.use("/comment", routerComment);
 
 module.exports = router;

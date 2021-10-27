@@ -16,7 +16,7 @@ const contentSchema = new Schema({
     ref: "user",
     required: true,
   },
-  conter: { type: Number, default: null },
+  conter: { type: Number, default: 1 },
 });
 
 const Content = mongoose.model("content", contentSchema);
