@@ -45,13 +45,13 @@ class authController {
       }
     } catch (err) {
       console.log(err);
-      res.status(500).json({ message: "error", status: 500 });
+      res.status(500).json({ message: "Error Login", status: 500 });
     }
   }
-  static async cekForm(req, res) {
+  static async cekUsername(req, res) {
     try {
-      const { username, email } = req.body;
-      const data = await User.find({ $or: [{ username }, { email }] });
+      const { username } = req.body;
+      const data = await User.findOne({ username });
       var stat = 0;
       var pesan = "";
       if (data) {
@@ -61,10 +61,29 @@ class authController {
         pesan = "Data tidak ditemukan";
         stat = 404;
       }
-      res.status(200).json({ message: pesan, status: stat, data });
+      res.status(200).json({ message: pesan, status: stat });
     } catch (err) {
       console.log(err);
       res.json(500).json({ message: "Error CekUsername" });
+    }
+  }
+  static async cekEmail(req, res) {
+    try {
+      const { email } = req.body;
+      const data = await User.findOne({ email });
+      var stat = 0;
+      var pesan = "";
+      if (data) {
+        stat = 200;
+        pesan = "Data ada";
+      } else {
+        stat = 404;
+        pesan = "Data tidak ditemukan";
+      }
+      res.status(stat).json({ message: pesan, status: stat });
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ message: "Error CekEmail" });
     }
   }
 }
