@@ -48,5 +48,24 @@ class authController {
       res.status(500).json({ message: "error", status: 500 });
     }
   }
+  static async cekForm(req, res) {
+    try {
+      const { username, email } = req.body;
+      const data = await User.find({ $or: [{ username }, { email }] });
+      var stat = 0;
+      var pesan = "";
+      if (data) {
+        pesan = "Data ada";
+        stat = 200;
+      } else {
+        pesan = "Data tidak ditemukan";
+        stat = 404;
+      }
+      res.status(200).json({ message: pesan, status: stat, data });
+    } catch (err) {
+      console.log(err);
+      res.json(500).json({ message: "Error CekUsername" });
+    }
+  }
 }
 module.exports = authController;
