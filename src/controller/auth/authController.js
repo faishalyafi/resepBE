@@ -1,6 +1,8 @@
 const Bcrypt = require("../../helper/bcrypt");
 const JWT = require("../../helper/jwt");
 const User = require("../../model/userModel");
+const crypto = require("crypto");
+const { sendEmail } = require("../../helper/nodemailer");
 
 class authController {
   static async register(req, res) {
@@ -12,7 +14,9 @@ class authController {
         res.status(409).json({ message: "conflict name/email", status: 409 });
       } else {
         const password = await Bcrypt.enskrip(req.body.password);
-        const data = await User.create({ username, email, password });
+        const token = crypto.randomBytes(16).toString("hex");
+        const data = await User.create({ username, email, password, token });
+        sendEmail(email, username, token);
         res
           .status(200)
           .json({ message: "Berhasil register", status: 200, data });
@@ -29,8 +33,9 @@ class authController {
       if (db) {
         const hash = db.password;
         const hasil = await Bcrypt.deskrip({ password, hash });
-        req.body.role = db.role;
         if (hasil) {
+          req.body.role = db.role;
+          await User.findOneAndUpdate({ username }, { $set: { token: null } });
           const token = await JWT.token(req.body);
           res.status(200).json({
             message: "Berhasil login",
@@ -80,10 +85,32 @@ class authController {
         stat = 404;
         pesan = "Data tidak ditemukan";
       }
-      res.status(stat).json({ message: pesan, status: stat });
+      res.status(200).json({ message: pesan, status: stat });
     } catch (err) {
       console.log(err);
       res.status(500).json({ message: "Error CekEmail" });
+    }
+  }
+  static async verifikasi(req, res) {
+    try {
+      const token = req.query.token;
+      const data = await User.findOneAndUpdate(
+        { token },
+        { $set: { verifikasi: true } }
+      );
+      let stat = 0;
+      let pesan = "";
+      if (data) {
+        pesan = "Berhasil aktivasi";
+        stat = 200;
+      } else {
+        pesan = "Token activasi tidak ditemukan";
+        stat = 404;
+      }
+      res.status(200).json({ message: pesan, status: stat });
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ message: "Error verifikasi", status: 500 });
     }
   }
 }

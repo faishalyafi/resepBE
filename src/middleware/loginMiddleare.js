@@ -32,6 +32,21 @@ class logMiddleware {
       res.status(500).json({ message: "Error", status: 500 });
     }
   }
+  static async cekVerif(req, res, next) {
+    try {
+      const data = await User.findOne({ username: req.body.username });
+      if (data.verifikasi) {
+        next();
+      } else {
+        res
+          .status(409)
+          .json({ message: "Belum melakukan verifikasi email", status: 409 });
+      }
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ message: "Error cekVerif", status: 500 });
+    }
+  }
 }
 
 module.exports = logMiddleware;
