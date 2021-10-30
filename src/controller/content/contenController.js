@@ -165,9 +165,16 @@ class ContentController {
     try {
       const input = req.body.input
       const data = await Content.find({nama_resep: { $regex: '.*' + input + '.*' } });
-      res
+      if(data.length > 0 ){
+        res
         .status(200)
         .json({ message: "Data by searching...", status: 200, data });
+      }else{
+        res
+        .status(200)
+        .json({ message: "Data tidak ditemukan" , status: 200 });
+      }
+      
     } catch (err) {
       console.log(err);
       res.status(500).json({ message: "Error getData" });
@@ -177,9 +184,15 @@ class ContentController {
     try {
       const input = req.body.input
       const data = await Content.find({tag: { $regex: '.*' + input + '.*' } });
-      res
+      if(data.length > 0 ){
+        res
         .status(200)
         .json({ message: "Data by searching...", status: 200, data });
+      }else{
+        res
+        .status(200)
+        .json({ message: "Data tidak ditemukan" , status: 200 });
+      }
     } catch (err) {
       console.log(err);
       res.status(500).json({ message: "Error getData" });
@@ -189,9 +202,15 @@ class ContentController {
     try {
       const input = req.body.input
       const data = await Content.findOne({'bahan.jenis': { $regex: '.*' + input + '.*' } });
-      res
+      if(data.length > 0 ){
+        res
         .status(200)
         .json({ message: "Data by searching...", status: 200, data });
+      }else{
+        res
+        .status(200)
+        .json({ message: "Data tidak ditemukan" , status: 200 });
+      }
     } catch (err) {
       console.log(err);
       res.status(500).json({ message: "Error getData" });

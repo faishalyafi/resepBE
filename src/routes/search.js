@@ -2,9 +2,9 @@ const express = require("express");
 const ContentController = require("../controller/content/contenController");
 const router = express.Router();
 
-router.get("/", ContentController.getSearch);
-router.get("/tag", ContentController.getSearchtag);
-router.get("/bahan", ContentController.getSearchBahan);
+router.post("/", ContentController.getSearch);
+router.post("/tag", ContentController.getSearchtag);
+router.post("/bahan", ContentController.getSearchBahan);
 
 
 module.exports = router;
