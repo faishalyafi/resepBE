@@ -161,6 +161,42 @@ class ContentController {
       res.status(500).json({ message: "Error getInexpensive" });
     }
   }
+  static async getSearch(req, res) {
+    try {
+      const input = req.body.input
+      const data = await Content.find({nama_resep: { $regex: '.*' + input + '.*' } });
+      res
+        .status(200)
+        .json({ message: "Data by searching...", status: 200, data });
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ message: "Error getData" });
+    }
+  }
+  static async getSearchtag(req, res) {
+    try {
+      const input = req.body.input
+      const data = await Content.find({tag: { $regex: '.*' + input + '.*' } });
+      res
+        .status(200)
+        .json({ message: "Data by searching...", status: 200, data });
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ message: "Error getData" });
+    }
+  }
+  static async getSearchBahan(req, res) {
+    try {
+      const input = req.body.input
+      const data = await Content.findOne({'bahan.jenis': { $regex: '.*' + input + '.*' } });
+      res
+        .status(200)
+        .json({ message: "Data by searching...", status: 200, data });
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ message: "Error getData" });
+    }
+  }
 }
 
 module.exports = ContentController;
