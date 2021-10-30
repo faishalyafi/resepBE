@@ -201,8 +201,8 @@ class ContentController {
   static async getSearchBahan(req, res) {
     try {
       const input = req.body.input
-      const data = await Content.findOne({'bahan.jenis': { $regex: '.*' + input + '.*' } });
-      if(data.length > 0 ){
+      const data = await Content.find({'bahan.jenis': { $regex: '.*' + input + '.*' } });
+            if(data.length > 0 ){
         res
         .status(200)
         .json({ message: "Data by searching...", status: 200, data });
