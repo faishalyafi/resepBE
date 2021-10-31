@@ -1,5 +1,5 @@
-const upload = require("../../helper/upload");
 const User = require("../../model/userModel");
+const sharp = require("sharp");
 
 class profilControler {
   static async updProfile(req, res, next) {
@@ -9,20 +9,21 @@ class profilControler {
       const db = await User.findOne({ username });
       if (db) {
         if (req.file) {
-          const image = req.file.filename;
+          const image = Date.now() + "-" + req.file.originalname;
           await User.updateOne({ username }, { $set: { image } });
+          await sharp(req.file.buffer)
+            .resize(600)
+            .toFile(`public/images/${image}`);
         }
-        const data = await User.updateOne(
+        await User.updateOne(
           { username },
           {
             $set: { nama_lengkap, tempat, tanggal, alamat },
           }
         );
-        res
-          .status(200)
-          .json({ message: "sukses terupdate", status: 200, data });
+        res.status(200).json({ message: "sukses terupdate", status: 200 });
       } else {
-        res.status(404).json({ message: "Not Found", status: 404 });
+        res.status(202).json({ message: "Not Found", status: 202 });
       }
     } catch (err) {
       console.log(err);

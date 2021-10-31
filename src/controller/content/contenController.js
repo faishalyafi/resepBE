@@ -86,9 +86,9 @@ class ContentController {
         stat = 200;
       } else {
         pesan = "Data sudah terhapus";
-        stat = 404;
+        stat = 202;
       }
-      res.status(stat).json({ message: pesan, status: stat, data });
+      res.status(200).json({ message: pesan, status: stat, data });
     } catch (err) {
       console.log(err);
       res.status(500).json({ message: "Error delConten", status: 500 });
@@ -107,6 +107,8 @@ class ContentController {
         cara_buat,
       } = req.body;
 
+      console.log(req.body);
+
       const data = await Content.findOneAndUpdate(
         { _id: id },
         {
@@ -119,10 +121,10 @@ class ContentController {
         stat = 200;
         pesan = "Update succes";
       } else {
-        stat = 404;
-        pesan = "Not Found";
+        stat = 202;
+        pesan = "Data kosong";
       }
-      res.status(stat).json({ message: pesan, status: stat, data });
+      res.status(200).json({ message: pesan, status: stat, data });
     } catch (err) {
       console.log(err);
       res.status(500).json({ message: "Error updConten", status: 500 });
@@ -141,7 +143,7 @@ class ContentController {
   }
   static async getHealty(req, res) {
     try {
-      const data = await Content.find({ kategori: "Healty" });
+      const data = await Content.find({ kategori: "Healthy" });
       res
         .status(200)
         .json({ message: "Data by Healty category", status: 200, data });
@@ -159,6 +161,59 @@ class ContentController {
     } catch (err) {
       console.log(err);
       res.status(500).json({ message: "Error getInexpensive" });
+    }
+  }
+  static async getSearch(req, res) {
+    try {
+      const input = req.body.input;
+      const data = await Content.find({
+        nama_resep: { $regex: ".*" + input + ".*" },
+      });
+      if (data.length > 0) {
+        res
+          .status(200)
+          .json({ message: "Data by searching...", status: 200, data });
+      } else {
+        res.status(200).json({ message: "Data tidak ditemukan", status: 200 });
+      }
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ message: "Error getData" });
+    }
+  }
+  static async getSearchtag(req, res) {
+    try {
+      const input = req.body.input;
+      console.log(input);
+      const data = await Content.find({ tag: { $regex: ".*" + input + ".*" } });
+      if (data.length > 0) {
+        res
+          .status(200)
+          .json({ message: "Data by searching...", status: 200, data });
+      } else {
+        res.status(200).json({ message: "Data tidak ditemukan", status: 200 });
+      }
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ message: "Error getData" });
+    }
+  }
+  static async getSearchBahan(req, res) {
+    try {
+      const input = req.body.input;
+      const data = await Content.find({
+        "bahan.jenis": { $regex: ".*" + input + ".*" },
+      });
+      if (data.length > 0) {
+        res
+          .status(200)
+          .json({ message: "Data by searching...", status: 200, data });
+      } else {
+        res.status(200).json({ message: "Data tidak ditemukan", status: 200 });
+      }
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ message: "Error getData" });
     }
   }
 }
